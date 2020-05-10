@@ -30,14 +30,15 @@ int main()
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
+    std::vector<GLuint> shaders = { readShader("./src/shaders/fragment.glsl", GL_FRAGMENT_SHADER), readShader("./src/shaders/vertex.glsl", GL_VERTEX_SHADER) };
+    GLuint programShader = linkShaders(shaders);
+
     Triangle triangle(glm::vec3(0.5f, 0.5f, 1.0f), glm::vec3(-0.5f, 0.5f, 1.0f), glm::vec3(0.0f,-0.5f, 1.0f));
 
-    triangle.setShaders("./src/shaders/fragment.glsl", "./src/shaders/vertex.glsl", [] (GLuint program) {
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-        glEnableVertexAttribArray(0);
-    });
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+    glEnableVertexAttribArray(0);
 
-    glUseProgram(triangle.getProgramShader());
+    glUseProgram(programShader);
 
     // initialize event loop
     while (!glfwWindowShouldClose(window)) {
@@ -50,8 +51,7 @@ int main()
         glfwPollEvents();
     }
 
-    triangle.free();
-
+    glDeleteProgram(programShader);
     glDeleteVertexArrays(1, &vao);
 
     // terminate glfw

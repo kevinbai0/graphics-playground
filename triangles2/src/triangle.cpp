@@ -1,5 +1,20 @@
 #include "triangle.hpp"
 
+GLuint linkShaders(std::vector<GLuint> shaders) {
+    GLuint program = glCreateProgram();
+    std::for_each(shaders.begin(), shaders.end(), [program](GLuint shader) {
+        glAttachShader(program, shader);
+    });
+    glLinkProgram(program);
+
+    // delete shaders
+    std::for_each(shaders.begin(), shaders.end(), [](GLuint shader) {
+        glDeleteShader(shader);
+    });
+    return program;
+}
+
+
 Triangle::Triangle(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
     this->p1 = p1;
     this->p2 = p2;
@@ -15,27 +30,4 @@ Triangle::Triangle(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
     glGenBuffers(1, &this->vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-}
-
-void Triangle::setShaders(const char *fragmentSourcePath, const char *vertexSourcePath, std::function<void(GLuint)> callback) {
-    GLuint fragmentShader = readShader(fragmentSourcePath, GL_FRAGMENT_SHADER);
-    GLuint vertexShader = readShader(vertexSourcePath, GL_VERTEX_SHADER);
-
-    this->program = glCreateProgram();
-    glAttachShader(this->program, fragmentShader);
-    glAttachShader(this->program, vertexShader);
-    glLinkProgram(this->program);
-    callback(this->program);
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-}
-
-GLuint Triangle::getProgramShader() {
-    return this->program;
-}
-
-void Triangle::free() {
-    glDeleteProgram(this->program);
-    glDeleteBuffers(1, &this->vbo);
 }
