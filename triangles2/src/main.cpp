@@ -30,13 +30,14 @@ int main()
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
-    Triangle triangle(glm::vec3(0.5f, 0.5f, 1.0f), glm::vec3(0.5f, 0.5f, 1.0f), glm::vec3(0.0f,-0.5f, 1.0f));
+    Triangle triangle(glm::vec3(0.5f, 0.5f, 1.0f), glm::vec3(-0.5f, 0.5f, 1.0f), glm::vec3(0.0f,-0.5f, 1.0f));
 
     triangle.setShaders("./src/shaders/fragment.glsl", "./src/shaders/vertex.glsl", [] (GLuint program) {
-        GLint posAttrib = glGetAttribLocation(program, "position");
-        glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
-        glEnableVertexAttribArray(posAttrib);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+        glEnableVertexAttribArray(0);
     });
+
+    glUseProgram(triangle.getProgramShader());
 
     // initialize event loop
     while (!glfwWindowShouldClose(window)) {

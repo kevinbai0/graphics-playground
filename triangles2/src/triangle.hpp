@@ -10,8 +10,7 @@ struct Point {
 class Triangle {
     public:
         void setShaders(const char *fragmentSourcePath, const char *vertexSourcePath, std::function<void(GLuint)> fun);
-        GLuint getVertexShader();
-        GLuint getFragmentShader();
+        GLuint getProgramShader();
         GLuint getVbo();
 
         void free();
@@ -21,8 +20,6 @@ class Triangle {
         GLuint vbo;
         GLuint ebo;
         GLuint program = 0;
-        GLuint vertexShader = 0;
-        GLuint fragmentShader = 0;
         float *getVertices();
         glm::vec3 p1;
         glm::vec3 p2;

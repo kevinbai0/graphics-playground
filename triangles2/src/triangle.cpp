@@ -18,34 +18,24 @@ Triangle::Triangle(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3) {
 }
 
 void Triangle::setShaders(const char *fragmentSourcePath, const char *vertexSourcePath, std::function<void(GLuint)> callback) {
-    if (this->fragmentShader) throw "Fragment shader is already set";
-    if (this->vertexShader) throw "Vertex shader is already set";
-    this->fragmentShader = readShader(fragmentSourcePath, GL_FRAGMENT_SHADER);
-    this->vertexShader = readShader(vertexSourcePath, GL_VERTEX_SHADER);
+    GLuint fragmentShader = readShader(fragmentSourcePath, GL_FRAGMENT_SHADER);
+    GLuint vertexShader = readShader(vertexSourcePath, GL_VERTEX_SHADER);
 
-    if (this->fragmentShader && this->vertexShader && this->program == 0) {
-        this->program = glCreateProgram();
-        glAttachShader(this->program, this->fragmentShader);
-        glAttachShader(this->program, this->vertexShader);
-        glLinkProgram(this->program);
-        glUseProgram(this->program);
-        callback(this->program);
-    }
+    this->program = glCreateProgram();
+    glAttachShader(this->program, fragmentShader);
+    glAttachShader(this->program, vertexShader);
+    glLinkProgram(this->program);
+    callback(this->program);
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
 }
 
-GLuint Triangle::getFragmentShader() {
-    return this->fragmentShader;
-}
-
-GLuint Triangle::getVertexShader() {
-    return this->vertexShader;
+GLuint Triangle::getProgramShader() {
+    return this->program;
 }
 
 void Triangle::free() {
-    if (this->program) glDeleteProgram(this->program);
-    if (this->fragmentShader) glDeleteShader(this->fragmentShader);
-    if (this->vertexShader) glDeleteShader(this->vertexShader);
-
+    glDeleteProgram(this->program);
     glDeleteBuffers(1, &this->vbo);
-
 }
