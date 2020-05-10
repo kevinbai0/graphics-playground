@@ -34,7 +34,7 @@ int main()
 
     triangle.setShaders("./src/shaders/fragment.glsl", "./src/shaders/vertex.glsl", [] (GLuint program) {
         GLint posAttrib = glGetAttribLocation(program, "position");
-        glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
+        glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, 0);
         glEnableVertexAttribArray(posAttrib);
     });
 
